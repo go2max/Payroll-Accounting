@@ -1,27 +1,10 @@
 from django.conf import settings
 from django.db import models
-from django.utils import timezone
 from decimal import Decimal
+from .defaults import default_period_label, default_notes, default_tx_id
+# timezone is imported in defaults.py, no need to import here
 
 User = settings.AUTH_USER_MODEL
-
-# --- Helper functions for defaults ---
-
-
-def default_period_label():
-    """Default period label for PayrollSession (e.g., '2025-09')."""
-    return timezone.now().strftime("%Y-%m")
-
-
-def default_notes():
-    """Default notes for text fields."""
-    return ""
-
-
-def default_tx_id():
-    """Default transaction ID."""
-    return ""
-
 
 # --- Models ---
 
