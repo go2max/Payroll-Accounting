@@ -58,9 +58,7 @@ class PayrollSession(models.Model):
         User, on_delete=models.PROTECT, related_name="created_payroll_sessions")
 
     class Meta:
-        permissions = [
-            ("manage", "Can manage payroll accounting"),
-        ]
+        permissions = [("manage", "Can manage payroll accounting")]
 
     @property
     def available_for_split(self):
