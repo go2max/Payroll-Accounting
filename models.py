@@ -2,7 +2,6 @@ from django.conf import settings
 from django.db import models
 from decimal import Decimal
 from .defaults import default_period_label, default_notes, default_tx_id
-# timezone is imported in defaults.py, no need to import here
 
 User = settings.AUTH_USER_MODEL
 
@@ -26,19 +25,25 @@ class PayrollSession(models.Model):
     corporation_id = models.BigIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     period_label = models.CharField(
-        max_length=64, default=default_period_label)
+        max_length=64, default=default_period_label
+    )
     income_isk = models.DecimalField(
-        max_digits=20, decimal_places=2, default=0)
+        max_digits=20, decimal_places=2, default=0
+    )
     reserved_min_isk = models.DecimalField(
-        max_digits=20, decimal_places=2, default=0)
+        max_digits=20, decimal_places=2, default=0
+    )
     wallet = models.ForeignKey(
-        CorpWallet, on_delete=models.PROTECT, related_name="sessions")
+        CorpWallet, on_delete=models.PROTECT, related_name="sessions"
+    )
     role_budget_isk = models.DecimalField(
-        max_digits=20, decimal_places=2, default=0)
+        max_digits=20, decimal_places=2, default=0
+    )
     note = models.TextField(blank=True, default=default_notes)
     note_locked = models.BooleanField(default=True)
     created_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name="created_payroll_sessions")
+        User, on_delete=models.PROTECT, related_name="created_payroll_sessions"
+    )
 
     class Meta:
         permissions = [("manage", "Can manage payroll accounting")]
@@ -50,7 +55,8 @@ class PayrollSession(models.Model):
 
 class Allocation(models.Model):
     session = models.ForeignKey(
-        PayrollSession, on_delete=models.CASCADE, related_name="allocations")
+        PayrollSession, on_delete=models.CASCADE, related_name="allocations"
+    )
     name = models.CharField(max_length=64)
     percent = models.DecimalField(max_digits=6, decimal_places=2)
     notes = models.CharField(max_length=200, blank=True, default=default_notes)
@@ -62,14 +68,17 @@ class Allocation(models.Model):
 
     @property
     def amount_isk(self):
-        return (self.session.available_for_split * (self.percent / 100)) if self.session else Decimal(0)
+        if self.session:
+            return self.session.available_for_split * (self.percent / 100)
+        return Decimal(0)
 
 
 class Role(models.Model):
     corporation_id = models.BigIntegerField()
     name = models.CharField(max_length=64, unique=True)
     default_percent = models.DecimalField(
-        max_digits=6, decimal_places=2, default=0)
+        max_digits=6, decimal_places=2, default=0
+    )
 
     def __str__(self):
         return self.name
@@ -77,9 +86,11 @@ class Role(models.Model):
 
 class RoleAssignment(models.Model):
     role = models.ForeignKey(
-        Role, on_delete=models.CASCADE, related_name="assignments")
+        Role, on_delete=models.CASCADE, related_name="assignments"
+    )
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="payroll_roles")
+        User, on_delete=models.CASCADE, related_name="payroll_roles"
+    )
     active = models.BooleanField(default=True)
 
     class Meta:
@@ -88,7 +99,8 @@ class RoleAssignment(models.Model):
 
 class RolePayout(models.Model):
     session = models.ForeignKey(
-        PayrollSession, on_delete=models.CASCADE, related_name="role_payouts")
+        PayrollSession, on_delete=models.CASCADE, related_name="role_payouts"
+    )
     role = models.ForeignKey(Role, on_delete=models.PROTECT)
     percent = models.DecimalField(max_digits=6, decimal_places=2)
 
@@ -99,13 +111,16 @@ class RolePayout(models.Model):
 
 class PaymentLog(models.Model):
     session = models.ForeignKey(
-        PayrollSession, on_delete=models.PROTECT, related_name="payments")
+        PayrollSession, on_delete=models.PROTECT, related_name="payments"
+    )
     user = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name="payments_received")
+        User, on_delete=models.PROTECT, related_name="payments_received"
+    )
     role = models.ForeignKey(Role, on_delete=models.PROTECT)
     amount_isk = models.DecimalField(max_digits=20, decimal_places=2)
     paid_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name="payments_made")
+        User, on_delete=models.PROTECT, related_name="payments_made"
+    )
     paid_at = models.DateTimeField(auto_now_add=True)
     tx_id = models.CharField(max_length=128, blank=True, default=default_tx_id)
 
@@ -115,5 +130,6 @@ class AuditLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     action = models.CharField(max_length=64)
     session = models.ForeignKey(
-        PayrollSession, on_delete=models.SET_NULL, null=True, blank=True)
+        PayrollSession, on_delete=models.SET_NULL, null=True, blank=True
+    )
     details = models.JSONField(default=dict, blank=True)
