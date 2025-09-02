@@ -1,0 +1,21 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payroll Accounting</title>
+  <link rel="stylesheet" href="{% static 'payroll_accounting/retro.css' %}">
+</head>
+<body class="retro-bg">
+  <div class="container">
+    <header class="retro-header">
+      <h1>Payroll Accounting</h1>
+      <p class="muted">ESI-powered | nerdy • retro</p>
+    </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

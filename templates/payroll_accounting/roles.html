@@ -1,0 +1,40 @@
+{% extends 'payroll_accounting/base.html' %}
+{% block content %}
+<section class="panel">
+  <h2>Positions</h2>
+  <form method="post" class="inline-form">
+    {% csrf_token %}
+    {{ role_form.as_p }}
+    <button class="btn" name="add_role" value="1">Add Role</button>
+  </form>
+
+  <table class="retro">
+    <thead><tr><th>Role</th><th>Default %</th></tr></thead>
+    <tbody>
+      {% for r in roles %}<tr><td>{{ r.name }}</td><td>{{ r.default_percent }}%</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="panel">
+  <h2>Assignments</h2>
+  <form method="post" class="inline-form">
+    {% csrf_token %}
+    {{ assign_form.as_p }}
+    <button class="btn" name="add_assignment" value="1">Assign</button>
+  </form>
+
+  <table class="retro">
+    <thead><tr><th>User</th><th>Role</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for a in assignments %}
+        <tr>
+          <td>{{ a.user }}</td>
+          <td>{{ a.role.name }}</td>
+          <td>{% if a.active %}Active{% else %}Inactive{% endif %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

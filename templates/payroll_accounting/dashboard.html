@@ -1,0 +1,78 @@
+{% extends 'payroll_accounting/base.html' %}
+{% load humanize %}
+{% block content %}
+  <section class="panel">
+    <form method="post" class="grid">
+      {% csrf_token %}
+      <div class="grid-2">
+        <label>Wallet</label>
+        {{ session_form.wallet }}
+      </div>
+      <div class="grid-2">
+        <label>Income (ISK)</label>
+        {{ session_form.income_isk }}
+      </div>
+      <div class="grid-2">
+        <label>Reserved Min (ISK)</label>
+        {{ session_form.reserved_min_isk }}
+      </div>
+      <div class="grid-2">
+        <label>Available for Split</label>
+        <div class="readonly">{% if session %}{{ session.available_for_split|floatformat:2|intcomma }}{% else %}0{% endif %}</div>
+      </div>
+      <div class="grid-2">
+        <label>Role Payment Budget</label>
+        {{ session_form.role_budget_isk }}
+      </div>
+      <div class="grid-1 note-row">
+        <label>Note</label>
+        <div class="note-line">
+          {{ session_form.note }}
+          <button class="btn" name="toggle_note_lock" value="1" type="submit">{% if session and session.note_locked %}Unlock{% else %}Lock{% endif %} Note</button>
+        </div>
+      </div>
+      <div class="grid-1">
+        <button class="btn primary" name="save_session" value="1">Save Session</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Allocations <span class="pill {% if alloc_sum == 100 %}ok{% else %}warn{% endif %}">{{ alloc_sum }}%</span></h2>
+    {% include 'payroll_accounting/partials/_allocations_table.html' %}
+
+    <details class="accordion">
+      <summary>Add Allocation</summary>
+      <form method="post" class="inline-form">
+        {% csrf_token %}
+        {{ alloc_form.as_p }}
+        <button class="btn" name="add_allocation" value="1">Add</button>
+      </form>
+    </details>
+  </section>
+
+  <section class="panel">
+    <h2>Role Payments <span class="pill {% if role_sum == 100 %}ok{% else %}warn{% endif %}">{{ role_sum }}%</span></h2>
+    {% include 'payroll_accounting/partials/_roles_table.html' %}
+
+    <details class="accordion">
+      <summary>Add Role %</summary>
+      <form method="post" class="inline-form">
+        {% csrf_token %}
+        {{ rolep_form.as_p }}
+        <button class="btn" name="add_rolepayout" value="1">Add</button>
+      </form>
+    </details>
+
+    <form method="post" class="inline-form">
+      {% csrf_token %}
+      <button class="btn success" name="mark_paid" value="1" onclick="return confirm('Log payments now?')">Mark as Paid (Log)</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Management</h2>
+    <p>Manage roles and assignments below.</p>
+    <a class="btn" href="{% url 'payroll_accounting:roles' %}">Open Roles Manager</a>
+  </section>
+{% endblock %}

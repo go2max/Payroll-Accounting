@@ -1,0 +1,29 @@
+<table class="retro">
+  <thead>
+    <tr>
+      <th>Role</th>
+      <th>% of Budget</th>
+      <th>ISK Payment</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if session and session.role_payouts.select_related('role').all %}
+      {% for rp in session.role_payouts.select_related('role').all %}
+        <tr>
+          <td>{{ rp.role.name }}</td>
+          <td>{{ rp.percent|floatformat:2 }}%</td>
+          <td>{{ rp.amount_isk|floatformat:2|intcomma }}</td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      <tr><td colspan="3" class="muted">No role allocations yet.</td></tr>
+    {% endif %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <th>Total Paid</th>
+      <th>{{ role_sum|floatformat:2 }}%</th>
+      <th>{{ session.role_budget_isk|floatformat:2|intcomma if session else 0 }}</th>
+    </tr>
+  </tfoot>
+</table>

@@ -1,0 +1,26 @@
+<table class="retro">
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th>%</th>
+      <th>ISK</th>
+      <th>Note</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if session and session.allocations.all %}
+      {% for a in session.allocations.all %}
+        <tr>
+          <td>{{ a.name }}</td>
+          <td>{{ a.percent|floatformat:2 }}%</td>
+          <td>{{ a.amount_isk|floatformat:2|intcomma }}</td>
+          <td class="muted">{{ a.notes }}</td>
+          <td></td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      <tr><td colspan="5" class="muted">No allocations yet.</td></tr>
+    {% endif %}
+  </tbody>
+</table>
