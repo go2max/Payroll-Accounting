@@ -1,17 +1,23 @@
-# payroll_accounting/defaults.py
 from django.utils import timezone
 
 
 def default_period_label():
-    """Default period label for PayrollSession (e.g., '2025-09')."""
+    """
+    Returns the default period label for PayrollSession.
+    Example: '2025-09'
+    """
     return timezone.now().strftime("%Y-%m")
 
 
 def default_notes():
-    """Default notes for text fields."""
+    """
+    Default text for notes fields.
+    """
     return ""
 
 
 def default_tx_id():
-    """Default transaction ID."""
+    """
+    Default value for transaction ID fields.
+    """
     return ""
