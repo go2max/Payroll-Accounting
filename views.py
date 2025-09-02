@@ -32,9 +32,8 @@ def user_can_access(request):
     staff_only = getattr(settings, "PAYROLL_STAFF_ONLY", True)
     return request.user.is_staff or not staff_only
 
+
 # --- Dashboard / main payroll page ---
-
-
 @login_required
 @permission_required("payroll_accounting.manage", raise_exception=True)
 @transaction.atomic
@@ -125,12 +124,10 @@ def dashboard(request, session_id=None):
         "alloc_sum": validate_percent_sum(session.allocations.all()) if session else Decimal(0),
         "role_sum": validate_percent_sum(session.role_payouts.all()) if session else Decimal(0),
     }
-
     return render(request, "payroll_accounting/dashboard.html", context)
 
+
 # --- Roles & assignments ---
-
-
 @login_required
 @permission_required("payroll_accounting.manage", raise_exception=True)
 def roles(request):
@@ -151,9 +148,7 @@ def roles(request):
             if form.is_valid():
                 ra = form.save()
                 AuditLog.objects.create(
-                    user=request.user,
-                    action="add_assignment",
-                    details={"role": ra.role.name, "user": ra.user_id},
+                    user=request.user, action="add_assignment", details={"role": ra.role.name, "user": ra.user_id}
                 )
                 return redirect("payroll_accounting:roles")
 
@@ -168,9 +163,8 @@ def roles(request):
         },
     )
 
+
 # --- Payroll app settings page ---
-
-
 @login_required
 @permission_required("payroll_accounting.manage", raise_exception=True)
 def settings_view(request):
