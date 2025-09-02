@@ -24,9 +24,9 @@ class CorpWallet(models.Model):
 class PayrollSession(models.Model):
     corporation_id = models.BigIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
-    period_label = models.CharField(
-        max_length=64, default=default_period_label
-    )
+    # period_label = models.CharField(
+    #     max_length=64, default=default_period_label
+    # )
     income_isk = models.DecimalField(
         max_digits=20, decimal_places=2, default=0
     )
