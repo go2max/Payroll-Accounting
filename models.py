@@ -9,15 +9,19 @@ User = settings.AUTH_USER_MODEL
 
 
 def default_period_label():
+    """Default period label for PayrollSession (e.g., '2025-09')."""
     return timezone.now().strftime("%Y-%m")
 
 
 def default_notes():
+    """Default notes for text fields."""
     return ""
 
 
 def default_tx_id():
+    """Default transaction ID."""
     return ""
+
 
 # --- Models ---
 
@@ -40,20 +44,16 @@ class PayrollSession(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     period_label = models.CharField(
         max_length=64, default=default_period_label)
-
     income_isk = models.DecimalField(
         max_digits=20, decimal_places=2, default=0)
     reserved_min_isk = models.DecimalField(
         max_digits=20, decimal_places=2, default=0)
-
     wallet = models.ForeignKey(
         CorpWallet, on_delete=models.PROTECT, related_name="sessions")
     role_budget_isk = models.DecimalField(
         max_digits=20, decimal_places=2, default=0)
-
     note = models.TextField(blank=True, default=default_notes)
     note_locked = models.BooleanField(default=True)
-
     created_by = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name="created_payroll_sessions")
 
