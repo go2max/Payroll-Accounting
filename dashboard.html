@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Payroll Dashboard</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Session</th>
+            <th>Wallet</th>
+            <th>Income</th>
+            <th>Reserved</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for session in sessions %}
+        <tr>
+            <td><a href="{% url 'payroll_accounting:session_detail' session.id %}">{{ session.period_label }}</a></td>
+            <td>{{ session.wallet.wallet_name }}</td>
+            <td>{{ session.income_isk }}</td>
+            <td>{{ session.reserved_min_isk }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No sessions found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
